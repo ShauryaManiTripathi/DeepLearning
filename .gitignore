@@ -1,0 +1,76 @@
+# Machine Learning specific
+*.h5
+*.pkl
+*.model
+.cache/
+.pytest_cache/
+.ipynb_checkpoints/
+*.ckpt
+events.out.tfevents.*
+
+# Tensorflow
+*.pb
+*.pbtxt
+
+# PyTorch
+*.pth
+*.pt
+
+# Datasets
+data/
+datasets/
+corpus/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Virtual environments
+venv/
+env/
+.venv/
+.env/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Downloads folder
+Downloads/
+
+# Images
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.tiff
+*.ico
+*.svg
+*.webp
+
+# Image datasets
+images/
+img/
+pictures/
+Photos/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE specific (common for ML projects)
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
