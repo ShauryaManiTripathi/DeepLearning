@@ -3,7 +3,7 @@
 # Configuration
 REPO_PATH="$(pwd)"  # Default to current directory
 BRANCH="main"
-COMMIT_INTERVAL=120  # Default interval in seconds
+COMMIT_INTERVAL=3600  # Default interval in seconds (1 hour)
 MAX_RETRIES=3
 LOG_FILE="$HOME/.git-auto-commit.log"
 COMMIT_PREFIX="[Auto]"  # Prefix for commit messages
