@@ -3,7 +3,7 @@
 # Configuration
 REPO_PATH="$(pwd)"  # Default to current directory
 BRANCH="main"
-COMMIT_INTERVAL=3600  # Default interval in seconds (1 hour)
+COMMIT_INTERVAL=120  # Default interval in seconds
 MAX_RETRIES=3
 LOG_FILE="$HOME/.git-auto-commit.log"
 COMMIT_PREFIX="[Auto]"  # Prefix for commit messages
@@ -12,6 +12,7 @@ COMMIT_PREFIX="[Auto]"  # Prefix for commit messages
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Function to log messages
@@ -20,6 +21,36 @@ log_message() {
     local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
     echo -e "${timestamp} - ${message}" >> "$LOG_FILE"
     echo -e "${message}"
+}
+
+# Function to get detailed file changes
+get_file_changes() {
+    local added=$(git status --porcelain | grep '^A' | wc -l)
+    local modified=$(git status --porcelain | grep '^M' | wc -l)
+    local deleted=$(git status --porcelain | grep '^D' | wc -l)
+    local renamed=$(git status --porcelain | grep '^R' | wc -l)
+    
+    echo -e "\nFile changes summary:"
+    echo -e "${GREEN}Added: $added${NC}"
+    echo -e "${BLUE}Modified: $modified${NC}"
+    echo -e "${RED}Deleted: $deleted${NC}"
+    echo -e "${YELLOW}Renamed: $renamed${NC}"
+    
+    echo -e "\nDetailed changes:"
+    echo -e "${GREEN}Added files:${NC}"
+    git status --porcelain | grep '^A' | sed 's/^A //' || echo "None"
+    
+    echo -e "\n${BLUE}Modified files:${NC}"
+    git status --porcelain | grep '^M' | sed 's/^M //' || echo "None"
+    
+    echo -e "\n${RED}Deleted files:${NC}"
+    git status --porcelain | grep '^D' | sed 's/^D //' || echo "None"
+    
+    echo -e "\n${YELLOW}Renamed files:${NC}"
+    git status --porcelain | grep '^R' | sed 's/^R //' || echo "None"
+    
+    # Return total number of changes
+    echo $((added + modified + deleted + renamed))
 }
 
 # Function to check if repository is clean
@@ -49,9 +80,17 @@ do_git_operations() {
             # Add all changes
             git add .
             
+            # Get detailed file changes and total count
+            echo -e "\n${BLUE}Analyzing changes...${NC}"
+            local changes_detail=$(get_file_changes)
+            local changes=$(echo "$changes_detail" | tail -n1)
+            
             # Create commit message with date and changes summary
-            local changes=$(git status --porcelain | wc -l)
             local commit_message="${COMMIT_PREFIX} $(date '+%Y-%m-%d %H:%M:%S') - ${changes} files changed"
+            
+            # Log the detailed changes
+            echo -e "\n${BLUE}Committing changes with message:${NC}"
+            echo -e "${YELLOW}$commit_message${NC}"
             
             # Commit changes
             if git commit -m "$commit_message"; then
