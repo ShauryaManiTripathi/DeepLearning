@@ -3,7 +3,7 @@
 # Configuration
 REPO_PATH="$(pwd)"  # Default to current directory
 BRANCH="main"
-COMMIT_INTERVAL=3600  # Default interval in seconds (1 hour)
+COMMIT_INTERVAL=360  # Default interval in seconds (1 hour)
 MAX_RETRIES=3
 LOG_FILE="$HOME/.git-auto-commit.log"
 COMMIT_PREFIX="[Auto]"  # Prefix for commit messages
@@ -91,6 +91,10 @@ do_git_operations() {
             # Log the detailed changes
             echo -e "\n${BLUE}Committing changes with message:${NC}"
             echo -e "${YELLOW}$commit_message${NC}"
+            
+            # Show affected files before commit
+            echo -e "\n${BLUE}Files to be committed:${NC}"
+            git status --porcelain
             
             # Commit changes
             if git commit -m "$commit_message"; then
